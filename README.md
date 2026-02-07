@@ -70,13 +70,19 @@ Help students and early professionals **visualize alternate career futures** thr
 - **Icon Integration**: Font Awesome icons throughout
 - **Google Fonts**: Premium typography with Inter font family
 
-## 🚀 Deploy on Vercel
+## 🚀 Deploy (GitHub Pages – free, no signup)
 
 1. Push this repo to GitHub (e.g. `https://github.com/vaishnavi861/codeathon`).
-2. Go to [vercel.com](https://vercel.com) and sign in (GitHub or email).
-3. Click **Add New** → **Project** and import your repo `vaishnavi861/codeathon`.
-4. **Leave Root Directory empty** (app files are at repo root). Leave **Build Command** and **Output Directory** empty.
-5. Click **Deploy**. Your app will be live at a `*.vercel.app` URL.
+2. On GitHub: open the repo → **Settings** → **Pages** (under "Code and automation").
+3. Under **Build and deployment** → **Source**: choose **Deploy from a branch**.
+4. Under **Branch**: select **master** (or **main**) and folder **/(root)**. Click **Save**.
+5. In 1–2 minutes the site will be live at:  
+   **https://vaishnavi861.github.io/codeathon/**
+
+### Other free hosts (optional)
+
+- **Netlify:** [netlify.com](https://www.netlify.com) → Add new site → Import from Git → choose this repo → leave build settings empty → Deploy.
+- **Cloudflare Pages:** [pages.cloudflare.com](https://pages.cloudflare.com) → Create project → Connect Git → same repo → Build: none, output: root.
 
 ---
 
