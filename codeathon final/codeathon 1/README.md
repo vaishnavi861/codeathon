@@ -70,7 +70,18 @@ Help students and early professionals **visualize alternate career futures** thr
 - **Icon Integration**: Font Awesome icons throughout
 - **Google Fonts**: Premium typography with Inter font family
 
-## 🚀 How to Run
+## 🚀 Deploy on Vercel
+
+1. Push this repo to GitHub (e.g. `https://github.com/vaishnavi861/codeathon`).
+2. Go to [vercel.com](https://vercel.com) and sign in (GitHub or email).
+3. Click **Add New** → **Project** and import your repo `vaishnavi861/codeathon`.
+4. **Important:** Set **Root Directory** to `codeathon final/codeathon 1` (click Edit, enter that path).
+5. Leave **Build Command** and **Output Directory** empty (static site).
+6. Click **Deploy**. Your app will be live at a `*.vercel.app` URL.
+
+---
+
+## 🚀 How to Run locally
 
 1. **No installation required!** This is a pure frontend application
 2. Simply open `index.html` in any modern web browser:

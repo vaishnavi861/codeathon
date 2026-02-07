@@ -239,14 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeRangeInputs();
     initializeScenarioControls();
     initializeProfileHandlers();
-    initializeDarkMode();
     loadProfile();
     loadCareerData();
     initializeExportHandlers();
     initializeGuidanceHandlers();
     initializeResumeUpload();
-    initializePalette();
+    initializeAppearance();
     initializeSoftSkillDetector();
+    initializeLearningCalendar();
 });
 
 // ============================================
@@ -803,14 +803,14 @@ function generateActions(weaknesses, careerGoal) {
 
             case 'skill_growth':
                 action.title = `Accelerate ${careerGoal} Skill Development`;
-                action.reason = `Current learning frequency (${weakness.currentValue} hrs/week) yields ${careerGrowth}% growth. The simulation shows you could reach ${improvedGrowth}% with increased effort.`;
+                action.reason = `Current learning frequency (${weakness.currentValue} hrs/week) is limiting your growth. Increasing structured learning could significantly improve your trajectory.`;
                 action.steps = [
                     `Dedicate 15-20 hours/week to structured ${careerGoal} learning`,
                     'Follow a curriculum (freeCodeCamp, Kaggle, etc.) - not random tutorials',
                     'Build 2-3 portfolio projects that demonstrate your skills',
                     'Contribute to open-source or take on freelance projects for real experience'
                 ];
-                action.expectedImpact = `Could improve skill growth from ${results.skillGrowth}% to 40%+`;
+                action.expectedImpact = 'Could improve skill growth to 40%+ with consistent effort';
                 action.timeCommitment = '15-20 hours/week';
                 action.resourceCategory = 'skill_building';
                 break;
@@ -822,6 +822,49 @@ function generateActions(weaknesses, careerGoal) {
     return actions;
 }
 
+// Profile + LinkedIn + projects–based recommendations
+function getProfileBasedRecommendations() {
+    const recs = [];
+    const goal = (careerTwin && careerTwin.careerGoal) ? careerTwin.careerGoal : (profileData && profileData.title) || 'Software Developer';
+    const skills = (careerTwin && careerTwin.skills && careerTwin.skills.length) ? careerTwin.skills : (resumeData && resumeData.skills) || [];
+    const hasProjects = resumeData && resumeData.projects && resumeData.projects.length > 0;
+
+    // LinkedIn Learning – always relevant from profile
+    recs.push({
+        title: 'LinkedIn Learning',
+        description: 'Courses aligned with your profile and role. Use your LinkedIn to track progress.',
+        url: 'https://www.linkedin.com/learning/',
+        category: 'From your profile',
+        relevantTo: 'Your career path',
+        impact: 'Structured learning that matches your goals'
+    });
+
+    // Career-specific from goal/title
+    const careerRes = RESOURCE_DATABASE.skill_building[goal] || RESOURCE_DATABASE.skill_building['default'];
+    careerRes.slice(0, 2).forEach(r => {
+        recs.push({
+            ...r,
+            category: 'Recommended for your goal',
+            relevantTo: goal,
+            impact: r.impact || 'Builds skills for your target role'
+        });
+    });
+
+    // If we detected projects, suggest portfolio & practice
+    if (hasProjects) {
+        recs.push({
+            title: 'GitHub – Showcase projects',
+            description: 'Host and document your projects. Matches the work you already do.',
+            url: 'https://github.com',
+            category: 'Based on your projects',
+            relevantTo: 'Portfolio & visibility',
+            impact: 'Strengthen profile with real work'
+        });
+    }
+
+    return recs;
+}
+
 function getContextualResources(careerGoal, actions) {
     const resources = [];
     const usedCategories = new Set();
@@ -830,7 +873,6 @@ function getContextualResources(careerGoal, actions) {
         const category = action.resourceCategory;
 
         if (category === 'skill_building') {
-            // Get career-specific resources
             const careerResources = RESOURCE_DATABASE.skill_building[careerGoal] ||
                 RESOURCE_DATABASE.skill_building['default'];
 
@@ -843,7 +885,6 @@ function getContextualResources(careerGoal, actions) {
             });
             usedCategories.add('Skill Building');
         } else {
-            // Get general category resources
             const categoryResources = RESOURCE_DATABASE[category] || [];
 
             categoryResources
@@ -859,7 +900,6 @@ function getContextualResources(careerGoal, actions) {
         }
     });
 
-    // Add practice tools if not already included
     if (!usedCategories.has('Practice Tools')) {
         RESOURCE_DATABASE.practice_tools
             .filter(r => r.relevance.includes('all') || r.relevance.includes(careerGoal))
@@ -872,6 +912,15 @@ function getContextualResources(careerGoal, actions) {
                 });
             });
     }
+
+    // Merge profile/LinkedIn/projects-based recommendations (no duplicates by title)
+    const byTitle = new Set(resources.map(r => r.title));
+    getProfileBasedRecommendations().forEach(r => {
+        if (!byTitle.has(r.title)) {
+            resources.push(r);
+            byTitle.add(r.title);
+        }
+    });
 
     return resources;
 }
@@ -975,7 +1024,13 @@ function displayGuidance(actions, resources) {
         resourcesContainer.appendChild(categorySection);
     });
 
-    // Scroll to guidance
+    // Show and fill learning calendar
+    const calendarSection = document.getElementById('learning-calendar');
+    if (calendarSection) {
+        calendarSection.classList.remove('hidden');
+        updateLearningCalendar();
+    }
+
     setTimeout(() => {
         document.getElementById('guidance').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
@@ -1201,64 +1256,122 @@ function loadProfile() {
 }
 
 // ============================================
-// DARK MODE
+// APPEARANCE (single control: theme + palette — fixes twin toggles)
 // ============================================
-function initializeDarkMode() {
-    const themeToggle = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('aiCareerTwin_theme');
-
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-    }
-
-    themeToggle.addEventListener('click', toggleDarkMode);
-}
-
-function toggleDarkMode() {
-    const body = document.body;
-    const themeToggle = document.getElementById('themeToggle');
-
-    body.classList.toggle('dark-mode');
-
-    if (body.classList.contains('dark-mode')) {
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        localStorage.setItem('aiCareerTwin_theme', 'dark');
-    } else {
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        localStorage.setItem('aiCareerTwin_theme', 'light');
-    }
-}
-
-// ============================================
-// PALETTE / THEME SELECTOR
-// ============================================
-function initializePalette() {
-    const select = document.getElementById('paletteSelect');
+function initializeAppearance() {
+    const select = document.getElementById('appearanceSelect');
     if (!select) return;
 
-    // Load saved palette or default
-    const saved = localStorage.getItem('aiCareerTwin_palette') || 'modern';
-    applyPalette(saved);
+    const saved = localStorage.getItem('aiCareerTwin_appearance') || 'light-modern';
+    applyAppearance(saved);
     select.value = saved;
 
     select.addEventListener('change', (e) => {
         const val = e.target.value;
-        applyPalette(val);
-        localStorage.setItem('aiCareerTwin_palette', val);
-        showNotification('Palette updated');
+        applyAppearance(val);
+        localStorage.setItem('aiCareerTwin_appearance', val);
+        showNotification('Appearance updated');
     });
 }
 
-function applyPalette(name) {
-    // normalize name -> use body class
+function applyAppearance(value) {
     const body = document.body;
+    const isDark = value.startsWith('dark-');
+    const palette = value.replace(/^(light|dark)-/, '');
+
+    if (isDark) {
+        body.classList.add('dark-mode');
+    } else {
+        body.classList.remove('dark-mode');
+    }
+
     body.classList.remove('palette-modern', 'palette-corporate', 'palette-minimal', 'palette-warm');
-    switch (name) {
+    switch (palette) {
         case 'corporate': body.classList.add('palette-corporate'); break;
         case 'minimal': body.classList.add('palette-minimal'); break;
         case 'warm': body.classList.add('palette-warm'); break;
         default: body.classList.add('palette-modern'); break;
+    }
+}
+
+// ============================================
+// LEARNING CALENDAR
+// ============================================
+let calendarState = { year: new Date().getFullYear(), month: new Date().getMonth() };
+
+function initializeLearningCalendar() {
+    const prevBtn = document.getElementById('calendarPrevMonth');
+    const nextBtn = document.getElementById('calendarNextMonth');
+    if (prevBtn) prevBtn.addEventListener('click', () => { calendarState.month--; if (calendarState.month < 0) { calendarState.month = 11; calendarState.year--; } updateLearningCalendar(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { calendarState.month++; if (calendarState.month > 11) { calendarState.month = 0; calendarState.year++; } updateLearningCalendar(); });
+    updateLearningCalendar();
+}
+
+function getCalendarActivities() {
+    const hoursPerWeek = (careerTwin && careerTwin.learningFrequency) ? Math.max(1, parseInt(careerTwin.learningFrequency, 10)) : 5;
+    const resources = (currentGuidance && currentGuidance.resources && currentGuidance.resources.length) ? currentGuidance.resources : getProfileBasedRecommendations();
+    const names = [...new Set(resources.slice(0, 7).map(r => r.title))];
+    const activitiesByDay = {};
+    for (let w = 0; w < 4; w++) {
+        for (let d = 0; d < 5; d++) {
+            const key = w * 7 + d;
+            const hrs = d < 3 ? 1 : Math.floor(hoursPerWeek / 5);
+            if (hrs > 0 && names[w % names.length]) {
+                activitiesByDay[key] = { title: names[w % names.length], hours: hrs };
+            }
+        }
+    }
+    return { hoursPerWeek, activitiesByDay, resourceNames: names };
+}
+
+function updateLearningCalendar() {
+    const container = document.getElementById('learningCalendar');
+    const labelEl = document.getElementById('calendarMonthLabel');
+    const legendEl = document.getElementById('calendarLegend');
+    if (!container) return;
+
+    const { year, month } = calendarState;
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    if (labelEl) labelEl.textContent = `${monthNames[month]} ${year}`;
+
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const startPad = (first.getDay() + 6) % 7;
+    const daysInMonth = last.getDate();
+    const today = new Date();
+    const { activitiesByDay, resourceNames } = getCalendarActivities();
+
+    let html = '';
+    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(h => { html += `<div class="calendar-day-header">${h}</div>`; });
+
+    let dayIndex = 0;
+    for (let i = 0; i < startPad; i++) {
+        html += `<div class="calendar-day other-month"><span class="calendar-day-num"> </span></div>`;
+        dayIndex++;
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, month, d);
+        const isToday = date.toDateString() === today.toDateString();
+        const dayOfWeek = (date.getDay() + 6) % 7;
+        const weekIndex = Math.floor((startPad + d - 1) / 7);
+        const key = weekIndex * 7 + dayOfWeek;
+        const activities = activitiesByDay[key];
+        const activityHtml = activities ? `<div class="calendar-activity">${activities.hours}h · ${activities.title}</div>` : '';
+        const hasActivity = !!activities;
+        html += `<div class="calendar-day ${isToday ? 'today' : ''} ${hasActivity ? 'has-activity' : ''}" data-date="${year}-${month}-${d}">
+          <span class="calendar-day-num">${d}</span>${activityHtml}</div>`;
+        dayIndex++;
+    }
+    const totalCells = 7 * 6;
+    while (dayIndex < totalCells) {
+        html += `<div class="calendar-day other-month"><span class="calendar-day-num"> </span></div>`;
+        dayIndex++;
+    }
+    container.innerHTML = html;
+
+    if (legendEl) {
+        legendEl.innerHTML = `<span><span class="dot"></span> Learning slot</span>
+          ${resourceNames.length ? resourceNames.slice(0, 3).map(n => `<span>· ${n}</span>`).join(' ') : ''}`;
     }
 }
 
@@ -1549,6 +1662,8 @@ function calculateAndDisplayScenarios() {
     const resultsContainer = document.getElementById('resultsContainer');
     if (resultsSection) resultsSection.scrollIntoView({ behavior: 'smooth' });
     if (resultsContainer) resultsContainer.classList.remove('hidden');
+    const calendarSection = document.getElementById('learning-calendar');
+    if (calendarSection) { calendarSection.classList.remove('hidden'); updateLearningCalendar(); }
 
     // Use advanced simulation engine
     const baselineParams = {

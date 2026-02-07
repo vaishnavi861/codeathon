@@ -30,15 +30,23 @@
                     <a href="#profile" class="nav-link">Profile</a>
                     <a href="#creation" class="nav-link">Create Twin</a>
                     <a href="#results" class="nav-link">Results</a>
-                    <select id="paletteSelect" title="Choose color palette" aria-label="Color palette selector">
-                        <option value="modern">Modern (Blue)</option>
-                        <option value="corporate">Corporate (Navy)</option>
-                        <option value="minimal">Minimal (Teal/Grey)</option>
-                        <option value="warm">Warm (Maroon/Gold)</option>
-                    </select>
-                    <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                    <a href="#learning-calendar" class="nav-link">Calendar</a>
+                    <div class="appearance-control" title="Appearance">
+                        <select id="appearanceSelect" aria-label="Theme and palette">
+                            <optgroup label="Light">
+                                <option value="light-modern">Light · Modern (Blue)</option>
+                                <option value="light-corporate">Light · Corporate (Navy)</option>
+                                <option value="light-minimal">Light · Minimal (Teal)</option>
+                                <option value="light-warm">Light · Warm (Maroon/Gold)</option>
+                            </optgroup>
+                            <optgroup label="Dark">
+                                <option value="dark-modern">Dark · Modern (Blue)</option>
+                                <option value="dark-corporate">Dark · Corporate (Navy)</option>
+                                <option value="dark-minimal">Dark · Minimal (Teal)</option>
+                                <option value="dark-warm">Dark · Warm (Maroon/Gold)</option>
+                            </optgroup>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -544,17 +552,35 @@
                         </div>
                     </section>
 
-                    <!-- Resources Panel -->
+                    <!-- Resources Panel (LinkedIn + projects–based) -->
                     <section class="section resources-section hidden" id="resources">
                         <h2 class="section-title">
                             <i class="fas fa-book-open"></i>
                             Resources for Your Path
                         </h2>
-                        <p class="section-description">Curated resources tailored to your career goal and development areas.</p>
+                        <p class="section-description">Recommendations based on your profile, LinkedIn, and projects. Use these to learn and grow.</p>
 
                         <div class="resources-container" id="resourcesContainer">
                             <!-- Dynamic resource cards grouped by category -->
                         </div>
+                    </section>
+
+                    <!-- Learning Calendar -->
+                    <section class="section calendar-section hidden" id="learning-calendar">
+                        <h2 class="section-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Learning Calendar
+                        </h2>
+                        <p class="section-description">Plan your learning to achieve your goals. Based on your available hours and recommended resources.</p>
+                        <div class="calendar-controls">
+                            <button type="button" class="btn btn-outline" id="calendarPrevMonth" aria-label="Previous month"><i class="fas fa-chevron-left"></i></button>
+                            <span class="calendar-month-label" id="calendarMonthLabel">February 2026</span>
+                            <button type="button" class="btn btn-outline" id="calendarNextMonth" aria-label="Next month"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div class="learning-calendar" id="learningCalendar">
+                            <!-- Calendar grid filled by JS -->
+                        </div>
+                        <div class="calendar-legend" id="calendarLegend"></div>
                     </section>
                 </div>
             </section>
