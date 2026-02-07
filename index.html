@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Twin - Digital Shadow</title>
+    <meta name="description" content="Visualize your career future with AI-powered simulation">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Career Twin</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#profile" class="nav-link">Profile</a>
+                    <a href="#creation" class="nav-link">Create Twin</a>
+                    <a href="#results" class="nav-link">Results</a>
+                    <a href="#learning-calendar" class="nav-link">Calendar</a>
+                    <div class="appearance-control" title="Appearance">
+                        <select id="appearanceSelect" aria-label="Theme and palette">
+                            <optgroup label="Light">
+                                <option value="light-modern">Light · Modern (Blue)</option>
+                                <option value="light-corporate">Light · Corporate (Navy)</option>
+                                <option value="light-minimal">Light · Minimal (Teal)</option>
+                                <option value="light-warm">Light · Warm (Maroon/Gold)</option>
+                            </optgroup>
+                            <optgroup label="Dark">
+                                <option value="dark-modern">Dark · Modern (Blue)</option>
+                                <option value="dark-corporate">Dark · Corporate (Navy)</option>
+                                <option value="dark-minimal">Dark · Minimal (Teal)</option>
+                                <option value="dark-warm">Dark · Warm (Maroon/Gold)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Hero Section -->
+    <section class="profile-hero" id="profile">
+        <div class="container">
+            <div class="profile-content">
+                <div class="profile-image-container">
+                    <input type="file" id="profilePhotoInput" accept="image/*" hidden>
+                    <div class="profile-image" id="profileImage">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <button class="edit-profile-btn" id="editProfileBtn" title="Edit Profile">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="upload-photo-btn" id="uploadPhotoBtn" title="Upload Profile Photo">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="profileName">Your Name</h1>
+                    <p class="profile-title" id="profileTitle">Your Career Title</p>
+                    <p class="profile-bio" id="profileBio">
+                        Add your bio here. Share your journey, aspirations, and what drives you in your career path.
+                    </p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="skillsCount">0</span>
+                            <span class="stat-label">Skills</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="simulationsCount">0</span>
+                            <span class="stat-label">Simulations</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="growthScore">0%</span>
+                            <span class="stat-label">Growth</span>
+                        </div>
+                    </div>
+                    <div class="profile-social">
+                        <a href="#" class="social-link" id="linkedinLink" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link" id="githubLink" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link" id="portfolioLink" title="Portfolio">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                        <a href="#" class="social-link" id="emailLink" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Resume Upload Section -->
+            <section class="section resume-upload-section" id="resumeUpload">
+                <h2 class="section-title">
+                    <i class="fas fa-file-upload"></i>
+                    Upload Your Resume
+                </h2>
+                <p class="section-description">
+                    Let AI analyze your resume to automatically assess your skills, experience, and create your career
+                    twin.
+                </p>
+
+                <div class="upload-container">
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="resumeInput" accept=".pdf,.txt,.docx,.doc" hidden>
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h3>Drop your resume here</h3>
+                            <p>or click to browse</p>
+                            <span class="upload-hint">Supported: PDF, TXT, DOCX</span>
+                            <label for="resumeInput" class="btn btn-outline browse-btn" style="margin-top:0.75rem;">Browse Files</label>
+                        </div>
+                    </div>
+
+                        <div class="paste-resume" id="pasteResumeArea">
+                            <h4>Or paste your resume text</h4>
+                            <textarea id="resumeTextInput" rows="8" placeholder="Paste your resume text here if upload isn't possible..."></textarea>
+                            <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+                                <button class="btn btn-primary" id="analyzeResumeTextBtn">Analyze Pasted Resume & Create Twin</button>
+                                <button class="btn btn-outline" id="clearResumeTextBtn">Clear</button>
+                            </div>
+                        </div>
+
+                    <div class="parsing-status hidden" id="parsingStatus">
+                        <div class="status-icon">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <p class="status-text">Analyzing your resume...</p>
+                    </div>
+
+                    <div class="resume-summary hidden" id="resumeSummary">
+                        <h3 class="summary-title">
+                            <i class="fas fa-check-circle"></i>
+                            Resume Analyzed Successfully
+                        </h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Skills Detected:</span>
+                                <span class="summary-value" id="detectedSkills">--</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Projects Found:</span>
+                                <span class="summary-value" id="detectedProjects">--</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Experience:</span>
+                                <span class="summary-value" id="detectedExperience">--</span>
+                            </div>
+                        </div>
+
+                        <h4 class="levels-title">Auto-Computed Levels</h4>
+                        <div class="levels-grid">
+                            <div class="level-card">
+                                <div class="level-icon"><i class="fas fa-code"></i></div>
+                                <div class="level-info">
+                                    <span class="level-label">Technical Skill</span>
+                                    <span class="level-value" id="autoTechnicalLevel">--/10</span>
+                                </div>
+                            </div>
+                            <div class="level-card">
+                                <div class="level-icon"><i class="fas fa-comments"></i></div>
+                                <div class="level-info">
+                                    <span class="level-label">Communication</span>
+                                    <span class="level-value" id="autoCommunicationLevel">--/10</span>
+                                </div>
+                            </div>
+                            <div class="level-card">
+                                <div class="level-icon"><i class="fas fa-project-diagram"></i></div>
+                                <div class="level-info">
+                                    <span class="level-label">Project Maturity</span>
+                                    <span class="level-value" id="autoProjectLevel">--/10</span>
+                                </div>
+                            </div>
+                            <div class="level-card">
+                                <div class="level-icon"><i class="fas fa-user-tie"></i></div>
+                                <div class="level-info">
+                                    <span class="level-label">Interview Readiness</span>
+                                    <span class="level-value" id="autoInterviewLevel">--/100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" id="createTwinFromResume">
+                            <i class="fas fa-magic"></i>
+                            Create Career Twin from Resume
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Soft Skill Gap Detector++ -->
+            <section class="section" id="softSkill">
+                <h2 class="section-title">
+                    <i class="fas fa-user-check"></i>
+                    Soft Skill Gap Detector++
+                </h2>
+                <p class="section-description">Answer short interview-style questions and receive a neutral, explainable evaluation of your communication across clarity, confidence, structure and relevance.</p>
+
+                <div class="softskill-container">
+                    <div class="softskill-questions">
+                        <form id="softSkillForm">
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-users"></i>
+                                    <strong>Behavioral Question</strong>
+                                </label>
+                                <p class="form-hint">Describe a specific situation where you managed a workplace conflict or challenge.</p>
+                                <textarea id="ans1" rows="4" placeholder="Situation: [Context]\nAction: [What you did]\nResult: [Outcome]"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-code"></i>
+                                    <strong>Technical Explanation</strong>
+                                </label>
+                                <p class="form-hint">Explain a technical concept, architecture, or solution you designed or implemented.</p>
+                                <textarea id="ans2" rows="4" placeholder="Problem: [What needed solving]\nApproach: [Your technical solution]\nOutcome: [Performance/Benefits]"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-lightbulb"></i>
+                                    <strong>Motivation & Career Goals</strong>
+                                </label>
+                                <p class="form-hint">Explain your professional motivation and alignment with career objectives.</p>
+                                <textarea id="ans3" rows="4" placeholder="Motivation: [Why this role interests you]\nAlignment: [How it fits your goals]\nContribution: [What you'll bring]"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-chart-line"></i>
+                                    Analyze Communication Profile
+                                </button>
+                                <button type="button" class="btn btn-outline" id="softSkillReset">Reset Form</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="softskill-results hidden" id="softSkillResults">
+                        <h3>Assessment Dashboard</h3>
+                        <div class="chart-row">
+                            <div class="chart-small">
+                                <h4>Communication Friction Map</h4>
+                                <canvas id="frictionChart" width="400" height="200"></canvas>
+                            </div>
+                            <div class="chart-small">
+                                <h4>Confidence–Clarity Mismatch</h4>
+                                <canvas id="mismatchChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <div id="explainableFeedback"></div>
+
+                        <div class="softskill-controls">
+                            <label><input type="checkbox" id="simAddExamples"> Add examples</label>
+                            <label><input type="checkbox" id="simImproveStructure"> Improve structure</label>
+                            <label><input type="checkbox" id="simReduceFillers"> Reduce filler words</label>
+                            <button class="btn btn-gradient" id="applySimulation">Simulate Improvements</button>
+                        </div>
+
+                        <div class="previous-comparison hidden" id="previousComparison">
+                            <h4>Previous Assessment Comparison</h4>
+                            <div id="comparisonSummary"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Manual Input Option (Collapsible) -->
+            <section class="section manual-input-section hidden" id="manualInputSection">
+                <h2 class="section-title">
+                    <i class="fas fa-keyboard"></i>
+                    Or Enter Details Manually
+                </h2>
+                <button class="btn btn-secondary" id="toggleManualInput">
+                    <i class="fas fa-chevron-down"></i>
+                    Show Manual Input Form
+                </button>
+                <div class="manual-form-container hidden" id="manualFormContainer">
+                    <!-- Career Twin Creation -->
+                    <section class="section" id="creation">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">
+                                    <i class="fas fa-rocket"></i>
+                                    Create Your Career Twin
+                                </h2>
+                                <p class="section-description">
+                                    Input your current state to create a baseline digital shadow. This is a simulation
+                                    starting
+                                    point, not a judgment.
+                                </p>
+                            </div>
+                            <button class="btn btn-outline" id="loadSavedBtn">
+                                <i class="fas fa-folder-open"></i>
+                                Load Saved
+                            </button>
+                        </div>
+
+                        <form class="form" id="careerForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="skills">
+                                        <i class="fas fa-code"></i>
+                                        Current Skills (comma separated)
+                                    </label>
+                                    <input type="text" id="skills" placeholder="e.g., JavaScript, Python, React"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="careerGoal">
+                                        <i class="fas fa-bullseye"></i>
+                                        Career Goal
+                                    </label>
+                                    <input type="text" id="careerGoal" placeholder="e.g., Full Stack Developer"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="learningFrequency">
+                                        <i class="fas fa-book-reader"></i>
+                                        Learning Frequency (hours/week)
+                                    </label>
+                                    <input type="number" id="learningFrequency" min="0" max="40" value="5" required>
+                                    <span class="input-hint">Current: <span id="learningValue">5</span>
+                                        hours/week</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="interviewPrep">
+                                        <i class="fas fa-user-tie"></i>
+                                        Interview Preparation Level
+                                    </label>
+                                    <input type="range" id="interviewPrep" min="1" max="10" value="5" required>
+                                    <span class="input-hint">Current: <span id="prepValue">5</span>/10</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="practiceConsistency">
+                                        <i class="fas fa-chart-line"></i>
+                                        Practice Consistency
+                                    </label>
+                                    <input type="range" id="practiceConsistency" min="1" max="10" value="5" required>
+                                    <span class="input-hint">Current: <span id="consistencyValue">5</span>/10</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="communicationSkill">
+                                        <i class="fas fa-comments"></i>
+                                        Communication Skill
+                                    </label>
+                                    <input type="range" id="communicationSkill" min="1" max="10" value="5" required>
+                                    <span class="input-hint">Current: <span id="commValue">5</span>/10</span>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-play"></i>
+                                    Create Career Twin
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="saveDataBtn">
+                                    <i class="fas fa-save"></i>
+                                    Save Data
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </section>
+
+            <!-- Results Section (Top-level, independently hidden) -->
+            <section class="section" id="results">
+                <div class="container hidden" id="resultsContainer">
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="btn btn-outline" id="exportPdfBtn">
+                            <i class="fas fa-file-pdf"></i>
+                            Export PDF
+                        </button>
+                        <button class="btn btn-outline" id="shareBtn">
+                            <i class="fas fa-share-alt"></i>
+                            Share
+                        </button>
+                    </div>
+
+                    <!-- What-If Scenarios -->
+                    <section class="section" id="scenarios">
+                        <h2 class="section-title">
+                            <i class="fas fa-sliders-h"></i>
+                            What-If Scenario Explorer
+                        </h2>
+                        <p class="section-description">
+                            Adjust your habits and see how different paths might unfold. These are simulations, not guarantees.
+                        </p>
+
+                        <div class="scenario-controls">
+                            <div class="control-group">
+                                <label for="scenarioLearning">
+                                    <i class="fas fa-book-reader"></i>
+                                    Learning Frequency
+                                </label>
+                                <input type="number" id="scenarioLearning" min="0" max="40" value="5">
+                                <span class="input-hint"><span id="scenarioLearningValue">5</span> hours/week</span>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="scenarioPractice">
+                                    <i class="fas fa-chart-line"></i>
+                                    Practice Consistency
+                                </label>
+                                <input type="range" id="scenarioPractice" min="1" max="10" value="5">
+                                <span class="input-hint"><span id="scenarioPracticeValue">5</span>/10</span>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="scenarioComm">
+                                    <i class="fas fa-comments"></i>
+                                    Communication
+                                </label>
+                                <input type="range" id="scenarioComm" min="1" max="10" value="5">
+                                <span class="input-hint"><span id="scenarioCommValue">5</span>/10</span>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="scenarioInterview">
+                                    <i class="fas fa-user-tie"></i>
+                                    Interview Prep
+                                </label>
+                                <input type="range" id="scenarioInterview" min="1" max="10" value="5">
+                                <span class="input-hint"><span id="scenarioInterviewValue">5</span>/10</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-gradient" id="recalculate">
+                            <i class="fas fa-sync-alt"></i>
+                            Recalculate Scenarios
+                        </button>
+                    </section>
+
+                    <!-- Comparison Dashboard -->
+                    <section class="section" id="comparison">
+                        <h2 class="section-title">
+                            <i class="fas fa-balance-scale"></i>
+                            Career Path Comparison
+                        </h2>
+                        <p class="section-description">
+                            Side-by-side view of different possible trajectories based on varying effort levels.
+                        </p>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-card card-risk">
+                                <div class="card-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h3>Risk Path</h3>
+                                <p class="card-label">Minimal effort scenario</p>
+                                <div id="riskCard"></div>
+                            </div>
+
+                            <div class="comparison-card card-current">
+                                <div class="card-icon">
+                                    <i class="fas fa-user-clock"></i>
+                                </div>
+                                <h3>Current Path</h3>
+                                <p class="card-label">Based on your inputs</p>
+                                <div id="currentCard"></div>
+                            </div>
+
+                            <div class="comparison-card card-improved">
+                                <div class="card-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <h3>Improved Path</h3>
+                                <p class="card-label">Optimized effort scenario</p>
+                                <div id="improvedCard"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Visualization Charts -->
+                    <section class="section" id="visualization">
+                        <h2 class="section-title">
+                            <i class="fas fa-chart-area"></i>
+                            Career Trajectory Visualization
+                        </h2>
+
+                        <div class="chart-grid">
+                            <div class="chart-container">
+                                <h3 class="chart-title">Skill Growth Timeline</h3>
+                                <canvas id="skillChart"></canvas>
+                            </div>
+
+                            <div class="chart-container">
+                                <h3 class="chart-title">Interview Readiness Comparison</h3>
+                                <canvas id="interviewChart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Insights Section -->
+                    <section class="section" id="insights">
+                        <h2 class="section-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Explainable Insights
+                        </h2>
+                        <p class="section-description">
+                            Understanding why these simulations differ based on your choices.
+                        </p>
+
+                        <div class="insights-container" id="insightsContainer">
+                            <!-- Insights will be dynamically generated -->
+                        </div>
+                    </section>
+
+                    <!-- Next Best Actions Section -->
+                    <section class="section guidance-section hidden" id="guidance">
+                        <h2 class="section-title">
+                            <i class="fas fa-rocket"></i>
+                            Next Best Actions
+                        </h2>
+                        <p class="section-description">Based on your simulation, here are the top 3 priorities to improve your career trajectory.</p>
+
+                        <div class="actions-grid" id="actionsGrid">
+                            <!-- Dynamic action cards will be inserted here -->
+                        </div>
+
+                        <div class="guidance-actions">
+                            <button class="btn btn-gradient" id="applyActionsBtn">
+                                <i class="fas fa-sync-alt"></i>
+                                Apply Recommendations & Re-simulate
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Resources Panel (LinkedIn + projects–based) -->
+                    <section class="section resources-section hidden" id="resources">
+                        <h2 class="section-title">
+                            <i class="fas fa-book-open"></i>
+                            Resources for Your Path
+                        </h2>
+                        <p class="section-description">Recommendations based on your profile, LinkedIn, and projects. Use these to learn and grow.</p>
+
+                        <div class="resources-container" id="resourcesContainer">
+                            <!-- Dynamic resource cards grouped by category -->
+                        </div>
+                    </section>
+
+                    <!-- Learning Calendar -->
+                    <section class="section calendar-section hidden" id="learning-calendar">
+                        <h2 class="section-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Learning Calendar
+                        </h2>
+                        <p class="section-description">Plan your learning to achieve your goals. Based on your available hours and recommended resources.</p>
+                        <div class="calendar-controls">
+                            <button type="button" class="btn btn-outline" id="calendarPrevMonth" aria-label="Previous month"><i class="fas fa-chevron-left"></i></button>
+                            <span class="calendar-month-label" id="calendarMonthLabel">February 2026</span>
+                            <button type="button" class="btn btn-outline" id="calendarNextMonth" aria-label="Next month"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div class="learning-calendar" id="learningCalendar">
+                            <!-- Calendar grid filled by JS -->
+                        </div>
+                        <div class="calendar-legend" id="calendarLegend"></div>
+                    </section>
+                </div>
+            </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Career Twin</span>
+                </div>
+                <p class="footer-text">
+                    <strong>Disclaimer:</strong> This is an educational simulation tool. Results are exploratory models,
+                    not guaranteed predictions.
+                    No rankings, comparisons with others, or personality inferences are made.
+                </p>
+                <p class="footer-copy">© 2026 AI Career Twin. Built with passion for career exploration.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Profile Edit Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editName">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input type="text" id="editName" placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <label for="editTitle">
+                        <i class="fas fa-briefcase"></i>
+                        Career Title
+                    </label>
+                    <input type="text" id="editTitle" placeholder="Your Career Title">
+                </div>
+                <div class="form-group">
+                    <label for="editBio">
+                        <i class="fas fa-align-left"></i>
+                        Bio
+                    </label>
+                    <textarea id="editBio" rows="4" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editLinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                        LinkedIn URL
+                    </label>
+                    <input type="url" id="editLinkedIn" placeholder="https://linkedin.com/in/yourprofile">
+                </div>
+                <div class="form-group">
+                    <label for="editGitHub">
+                        <i class="fab fa-github"></i>
+                        GitHub URL
+                    </label>
+                    <input type="url" id="editGitHub" placeholder="https://github.com/yourusername">
+                </div>
+                <div class="form-group">
+                    <label for="editPortfolio">
+                        <i class="fas fa-globe"></i>
+                        Portfolio URL
+                    </label>
+                    <input type="url" id="editPortfolio" placeholder="https://yourportfolio.com">
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input type="email" id="editEmail" placeholder="your.email@example.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelEdit">Cancel</button>
+                <button class="btn btn-primary" id="saveProfile">
+                    <i class="fas fa-save"></i>
+                    Save Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
